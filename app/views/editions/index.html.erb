@@ -1,0 +1,13 @@
+<table>
+  <tr>
+    <th>Publisher</th>
+    <th>Description</th>
+  </tr>
+  <% @editions.each do |edition| %>
+    <tr>
+      <td><%= edition.publisher %></td>
+      <td><%= edition.description %></td>
+      <td><%= link_to 'Show more', composer_work_edition_path(edition.work.composer, edition.work, edition) %></td>
+    </tr>
+  <% end %>
+</table>

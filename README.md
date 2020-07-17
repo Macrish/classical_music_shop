@@ -8,6 +8,8 @@ In this application, I will to:
 
 * create records in DB
 
+* Nested resources
+
 # change SQLite to MySQL
 
 https://blog.bigbinary.com/2019/04/30/rails-6-has-added-a-way-to-change-the-database-of-the-app.html
@@ -111,3 +113,10 @@ enter next commands:
 * w1 = Work.find(1)
 
 * w1.editions.create(description: 'Urtext', publisher: 'RubyTunes, Inc.', year: 1977, price: 23.50)
+
+# Nested resources
+
+Вложенные ресурсы нужны в моем приложении для того, чтобы достать связанные все editions
+с work
+
+Ресурсы никогда не должны быть вложены глубже, чем на 1 уровень
