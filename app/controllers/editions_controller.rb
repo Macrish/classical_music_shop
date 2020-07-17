@@ -12,7 +12,6 @@ class EditionsController < ApplicationController
   private
 
   def set_edition
-    @composer = Composer.find(params[:composer_id])
-    @work = @composer.works.find(params[:work_id])
+    @work = Work.find(params[:work_id])
   end
 end
