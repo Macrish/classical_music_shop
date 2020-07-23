@@ -10,6 +10,8 @@ In this application, I will to:
 
 * Nested resources
 
+* if server doesn't run
+
 # change SQLite to MySQL
 
 https://blog.bigbinary.com/2019/04/30/rails-6-has-added-a-way-to-change-the-database-of-the-app.html
@@ -120,3 +122,10 @@ enter next commands:
 с work
 
 Ресурсы никогда не должны быть вложены глубже, чем на 1 уровень
+
+# if server doesn't run
+
+Нужно проверить log/development.log, исправить все ошибки и снова запустить сервер
+
+Если проблема влияет на БД, нужно остановить сервер и перезапустить его, если
+уверены, что это не усугубит ситуацию.
