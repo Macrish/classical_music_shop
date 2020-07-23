@@ -13,7 +13,9 @@ In this application, I will to:
 * if server doesn't run
 
 * customers with fields in table called title, first_name, middle_initial, and last_name.
-  How to display all field in a view template?          
+  How to display all field in a view template?
+ 
+* Загрузка файла из корневого каталога  
 
 # change SQLite to MySQL
 
@@ -154,4 +156,59 @@ class Customer < ActiveRecord::Base
 <p>Good morning, <%= @customer.nice_name %>.</p>
 ```
 
+# Загрузка файла из корневого каталога 
+
+```
+require 'config/environment.rb'
+files = Dir["../file*"].sort
+files.each do |file|
+    m = YAML.load(File.read(file)
+```
+Conversion script to load legacy YAML data into a Rails application database
+```
+ require 'config/environment.rb'
+
+ #1 инициализация пустого хэша
+ mnums = {}
+ files = Dir["../file*"].sort
  
+ #2 имена файлов хотят отсортировать в алфавитном порядке в массив файлов
+ files.each do |file|
+
+     #3 Для каждого файла скрипт создает Руби объект на снове чтения файла YAML. 
+     # YAML сериализует данные Ruby в строковую форму
+     m = YAML.load(File.read(file))
+     num = m['number']
+     prev = m['previous']
+     
+     #4 скрип ищет пользователя и если не находит создает нового
+     user = User.find_by_name(m['username'])
+     unless user
+        user = User.new
+        user.name = m['username']
+        user.save
+ end
+
+ #5 создается сообщение, где id будет хранится в mnums
+ # это необходимо для сопоставление старой последовательности нумерации сообщений с новой
+ message = Message.new
+ message.save
+ mnums[num] = message.id
+
+ #6 поля нового объекта сообщения инициализируются в соответствующие
+ # значения из файла: пользователь, номер, тело, заголовок и дата
+ message.user = user
+ message.number = num
+ message.body = m['body']
+ message.title = m['title']
+ message.date = m['date']
+
+#7 если предыдущее смс существует, находим его и добавляем в поле previous для нового сообщения
+ if prev
+   message.previous = Message.find(mnums[prev])
+ end
+
+#8 сохранение сообщение в БД
+ message.save
+end
+```
