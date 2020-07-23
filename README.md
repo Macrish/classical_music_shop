@@ -12,6 +12,9 @@ In this application, I will to:
 
 * if server doesn't run
 
+* customers with fields in table called title, first_name, middle_initial, and last_name.
+  How to display all field in a view template?          
+
 # change SQLite to MySQL
 
 https://blog.bigbinary.com/2019/04/30/rails-6-has-added-a-way-to-change-the-database-of-the-app.html
@@ -44,47 +47,44 @@ Query OK, 0 rows affected, 1 warning (0,04 sec)
 
 **** config/database.yml содежит следующий код
   
-  ===========
-
+```
 default: &default
 
-  &nbsp;&nbsp; adapter: mysql2
+  adapter: mysql2
   
-  &nbsp;&nbsp; encoding: utf8mb4
+  ncoding: utf8mb4
   
-  &nbsp;&nbsp; pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
+  pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
   
-  &nbsp;&nbsp; username: r4r
+  username: r4r
   
-  &nbsp;&nbsp; password: USER_PASS
+  password: USER_PASS
   
-  &nbsp;&nbsp; socket: /var/run/mysqld/mysqld.sock
-  
+  socket: /var/run/mysqld/mysqld.sock
   
 
 development:
 
-  &nbsp;&nbsp; <<: *default
+  <<: *default
   
-  &nbsp;&nbsp; database: classical_music_shop_development
+  database: classical_music_shop_development
   
 
 test:
-  &nbsp;&nbsp; <<: *default
+  <<: *default
   
-  &nbsp;&nbsp; database: classical_music_shop_test
+  database: classical_music_shop_test
 
 production:
 
-  &nbsp;&nbsp; <<: *default
+  <<: *default
   
-  &nbsp;&nbsp; database: classical_music_shop_production
+  database: classical_music_shop_production
   
-  &nbsp;&nbsp; username: classical_music_shop
+  username: classical_music_shop
   
-  &nbsp;&nbsp; password: <%= ENV['CLASSICAL_MUSIC_SHOP_DATABASE_PASSWORD'] %>
- 
-  ===========
+  password: <%= ENV['CLASSICAL_MUSIC_SHOP_DATABASE_PASSWORD'] %>
+```
 
 &nbsp;&nbsp;  username: r4r
 
@@ -107,15 +107,12 @@ enter next commands:
 + rails db:migrate
 
 # create records in DB
-
-* c1 = Composer.create(first_name: 'Johannes', last_name: 'Brahms')
-
-* c1.works.create(title: 'Sonata for Cello and Piano in F Major')
-
-* w1 = Work.find(1)
-
-* w1.editions.create(description: 'Urtext', publisher: 'RubyTunes, Inc.', year: 1977, price: 23.50)
-
+```
+c1 = Composer.create(first_name: 'Johannes', last_name: 'Brahms')
+c1.works.create(title: 'Sonata for Cello and Piano in F Major')
+w1 = Work.find(1)
+w1.editions.create(description: 'Urtext', publisher: 'RubyTunes, Inc.', year: 1977, price: 23.50)
+```
 # Nested resources
 
 Вложенные ресурсы нужны в моем приложении для того, чтобы достать связанные все editions
@@ -129,3 +126,32 @@ enter next commands:
 
 Если проблема влияет на БД, нужно остановить сервер и перезапустить его, если
 уверены, что это не усугубит ситуацию.
+
+# customers with fields in table called title, first_name, middle_initial, and last_name. How to display all field in a view template?
+
+view
+```
+<p>Hello, <%= @customer.title + " " + @customer.first_name + " " +
+@customer.middle_initial + ". " +
+@customer.last_name" %></p>
+```
+но такой вид записи не удобен, если нужно сделать изменения в каждой вьюхе
+
+or 
+
+```
+class Customer < ActiveRecord::Base
+   def nice_name
+       title + " " + first_name + " " +
+       (if middle_initial then middle_initial + ". " else "" end) +
+       last_name
+   end
+ end
+```
+
+тогда отображение во вьюхе будет выглядеть следующим образом
+```
+<p>Good morning, <%= @customer.nice_name %>.</p>
+```
+
+ 
