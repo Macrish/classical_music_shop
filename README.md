@@ -17,6 +17,12 @@ In this application, I will to:
  
 * Загрузка файла из корневого каталога  
 
+* modify editions in DB & add new publishers table
+
+* many-to-many relations
+
+* add records to DB in many-to-many relations
+
 # change SQLite to MySQL
 
 https://blog.bigbinary.com/2019/04/30/rails-6-has-added-a-way-to-change-the-database-of-the-app.html
@@ -323,4 +329,23 @@ rails g migration CreateInstrumentsWorks
 В модели Инструмент добавляем и для модели Работа аналогично
 ```
 has_and_belongs_to_many :works
+```
+#add records to DB in many-to-many relations
+создаём композитора и добавляем ему произведение
+cоздаём инструмент и добавляем ему произведение
+```
+c1 = Composer.create(first_name: 'Johannes', last_name: 'Brahms')
+c1.works.create(title: 'Sonata for Cello and Piano in F Major')
+cw = c1.works.last
+
+i = Instrument.create(name: 'violin', family: 'viole')
+v = Instrument.first
+
+v.works << cw
+v.works << cw
+# отобразить все произведения, которые использует этот инструмент
+v.works
+
+# отобразить все инструменты, которые использует произведение
+cw.instruments 
 ```
