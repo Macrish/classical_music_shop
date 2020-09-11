@@ -10,11 +10,21 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_09_11_142300) do
+ActiveRecord::Schema.define(version: 2020_09_11_151038) do
 
   create_table "composers", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=latin1", force: :cascade do |t|
     t.string "first_name", limit: 25
     t.string "last_name", limit: 25
+  end
+
+  create_table "customers", options: "ENGINE=InnoDB DEFAULT CHARSET=latin1", force: :cascade do |t|
+    t.string "first_name", limit: 30
+    t.string "last_name", limit: 30
+    t.string "nick", limit: 15
+    t.string "password", limit: 40
+    t.string "email", limit: 50
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
   end
 
   create_table "editions", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=latin1", force: :cascade do |t|
@@ -48,6 +58,15 @@ ActiveRecord::Schema.define(version: 2020_09_11_142300) do
     t.index ["work_id"], name: "index_instruments_works_on_work_id"
   end
 
+  create_table "orders", options: "ENGINE=InnoDB DEFAULT CHARSET=latin1", force: :cascade do |t|
+    t.string "status"
+    t.integer "edition_id"
+    t.bigint "customer_id", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["customer_id"], name: "index_orders_on_customer_id"
+  end
+
   create_table "publishers", options: "ENGINE=InnoDB DEFAULT CHARSET=latin1", force: :cascade do |t|
     t.string "name", limit: 60
     t.string "city", limit: 30
@@ -63,4 +82,5 @@ ActiveRecord::Schema.define(version: 2020_09_11_142300) do
   end
 
   add_foreign_key "editions", "publishers"
+  add_foreign_key "orders", "customers"
 end
