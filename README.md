@@ -23,6 +23,8 @@ In this application, I will to:
 
 * add records to DB in many-to-many relations
 
+* add to publisher - editions (publisher has_many :editions)
+
 # change SQLite to MySQL
 
 https://blog.bigbinary.com/2019/04/30/rails-6-has-added-a-way-to-change-the-database-of-the-app.html
@@ -342,5 +344,17 @@ i = Instrument.create(name: 'violin', family: 'viole')
 v = Instrument.first
 
 v.works << cw
+v.works << cw
+# отобразить все произведения, которые использует этот инструмент
 v.works
+
+# отобразить все инструменты, которые использует произведение
+cw.instruments 
+```
+
+#add to publisher - editions (publisher has_many :editions)
+```
+p = Publisher.create(name: "Tanya", city: "***", country: "Urk")
+#choose work_ed = work(1).editions(1)
+p.editions << work_ed
 ```
