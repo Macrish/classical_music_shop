@@ -212,3 +212,115 @@ Conversion script to load legacy YAML data into a Rails application database
  message.save
 end
 ```
+# Chapter 14
+Модели сущностей Rails - это классы Ruby
+Рассмотрим экземпляр модели ActiveRecord 
+##Обзор возможностей экземпляра модели
+Экземпляр класса модели - Composer, Work...
+имеют определенные возможности - выполнение методов,
+которые можно вызвать.
+
+Возможности экземпляров моделей Rails получаем:
+* наследование, вызов методов экземпляра суперкласса
+(ActiveRecord :: Base или другого класса)
+* Automatic creation of accessor and other methods
+(от accessor и других методов на основе полей в соответствующей
+таблице БД(объекты Composer имеют title и title = method))
+
+Каждый экземпляр модели Composer отвечает на сообщение title, 
+Эз-ры так же отвечают на title= (у них есть сеттер)
+* Semi-automatic creation of accessor and other methods
+(has_one :composer , in the case of the Work class)
+
+"Есть ассоциация" один ко многим " это значит:
+rails c 
+```
+has_many :works
+belongs_to :composer
+```
+также в таблице works имеется поле - composer_id
+* программное добавление методов экземпляра, добавленных в модель
+
+###Inherited and automatic ActiveRecord model behaviors
+Объект модели ActiveRecord, такой как экземпляр класса Composer, уже
+при создании имеет много функциональных возможностей.
+
+rails c 
+```
+$ ruby script/console
+Loading development environment.
+>> ActiveRecord::Base.instance_methods.size
+=> 180
+```
+ЖЦ объекта ActiveRecord: save , update , and destroy.
+
+ЖЦ метода класса: new , create , find , and delete.
+
+Создать новый объект Ruby
+```
+b = Bicycle.new
+```
+Объекты ActiveRecord допускают такую ​​же обработку.
+```
+c = Composer.new
+```
+Разница между объектом ActiveRecord и типичным объектом Ruby - объект
+ActiveRecord явдяется объектом Руби, с другой стороны
+с помощью этого объекта можно делать записи в БД.
+
+Некоторые функции ActiveRecord на уровне классов выполняют действия с данными:
+например Composer.delete(идентификатор) - удаляет запись с БД
+(даже не нужно создавать соответствующий экземпляр)
+
+# modify editions in DB & add new publishers table
+
+Было
+```
+create_table "editions", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=latin1", force: :cascade do |t|
+    t.integer "work_id", null: false
+    t.string "description", limit: 30
+    t.string "publisher", limit: 60
+    t.integer "year"
+    t.float "price"
+  end
+  ```
+Нужно убрать publisher, добавить publisher_id, оставить title
+Добавляю миграцию:
+```
+class AddPublisherRefToEditions < ActiveRecord::Migration[6.0]
+    def change
+        add_reference :editions, :publisher, foreign_key: true
+        add_column :editions, :title, :string, limit: 100
+    end
+end
+```
+При rollback t.string "publisher" в editions не вернется
+
+# many-to-many relations
+любое произведение(work) может быть для любого количества инструментов, и для любого инструмента может быть написано любое количество произведений. 
+
+This mechanism—the entity_id field, coupled with the appropriate associations—
+ drives the one-to-many relationships.
+
+Если инструменты и произведения стоят в ряду многие-ко-многим
+относительно друг друга, то в записи инструмента не может быть одного поля work_id.
+Это означало бы, что для каждого инструмента есть одна и только одна работа, которую
+которому он принадлежит.
+
+ Также в таблице работ не может быть поля instrument_id.
+ 
+rails g migration CreateInstrumentsWorks
+```
+ class CreateInstrumentsWorks < ActiveRecord::Migration[6.0]
+   def change
+     create_table :instruments_works do |t|
+       t.belongs_to :instrument
+       t.belongs_to :work
+     end
+   end
+ end
+```
+В модели Инструмент добавляем и для модели Работа аналогично
+```
+has_and_belongs_to_many :works
+```
