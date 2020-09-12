@@ -474,9 +474,50 @@ end
   #####The Composer model
 + What editions of this composer’s works exist?
 ```
+def editions
+    works.map {|work| work.editions }.flatten.uniq
+end
 ```
 + What publishers have editions of this composer’s works?
 ```
+def publishers
+    editions.map{|edition| edition.publisher }.uniq
+end
 ```
   
-               
+  Самые быстрые запросы в БД - SQL, потому что когда мы пишем запрос на Ruby
+  сначала этот запрос переводится в SQL и только потом получет доступ к БД.
+
+#### Улучшения функциональности модели
+* предварительная установка свойст строки
+До
+```
+def nice_instruments
+   instrs = instruments.map {|inst| inst.name }
+end
+```
+После
+```
+ordered = %w{ flute oboe violin viola cello piano orchestra }
+instrs = instrs.sort_by {|i| ordered.index(i) || 0
+```
+также инструменты можно поместить в константу, но Конст будет
+обновляться вручную
+
+Далее можно задать условие что произведение допустим написано для нескольких инструментов
+```
+case instrs.size
+when 0
+    nil
+when 1
+    instrs[0]
+when 2
+    instrs.join(" and ")
+else
+    instrs[0..-2].join(", ") + ", and " + instrs[-1]
+end
+```
+* расчет периода работы
+
+* предоставление клиенту большей функциональности
+
