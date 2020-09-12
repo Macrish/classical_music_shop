@@ -5,7 +5,8 @@ class Customer < ApplicationRecord
   has_many :orders, ->{ order("created_at ASC") }, dependent: :destroy
 
   def open_orders
-    orders.find(:all, :conditions => "status = 'open'")
+    # orders.find(:all, :conditions => "status = 'open'")  #устареласю
+    orders.where(status: 'open')
   end
 
   def editions_on_order

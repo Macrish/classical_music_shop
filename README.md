@@ -443,7 +443,8 @@ end
 + What open orders does this customer have?
 ```
 def open_orders
-    orders.find(:all, :conditions => "status = 'open'")
+    #устарело #orders.find(:all, :conditions => "status = 'open'")
+    orders.where(status: 'open')
 end
 ```
 + What editions does this customer have on order?
