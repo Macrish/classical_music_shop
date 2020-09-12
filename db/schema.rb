@@ -10,11 +10,15 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_09_11_151038) do
+ActiveRecord::Schema.define(version: 2020_09_12_094409) do
 
   create_table "composers", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=latin1", force: :cascade do |t|
     t.string "first_name", limit: 25
     t.string "last_name", limit: 25
+    t.string "middle_name", limit: 25
+    t.integer "birth_year"
+    t.integer "death_year"
+    t.string "country", limit: 3
   end
 
   create_table "customers", options: "ENGINE=InnoDB DEFAULT CHARSET=latin1", force: :cascade do |t|
@@ -70,15 +74,17 @@ ActiveRecord::Schema.define(version: 2020_09_11_151038) do
   create_table "publishers", options: "ENGINE=InnoDB DEFAULT CHARSET=latin1", force: :cascade do |t|
     t.string "name", limit: 60
     t.string "city", limit: 30
-    t.string "country", limit: 3
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.integer "price"
   end
 
   create_table "works", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=latin1", force: :cascade do |t|
     t.integer "composer_id"
     t.string "title", limit: 100
     t.integer "year"
+    t.string "key"
+    t.integer "opus"
   end
 
   add_foreign_key "editions", "publishers"
