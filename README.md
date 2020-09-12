@@ -433,16 +433,49 @@ def key
 end
 ```
 
-  The Customer model
+  #####The Customer model
 + Which customers have ordered this work?
+```
+def ordered_by
+    editions.orders.map {|o| o.customer }.uniq
+end
+```
 + What open orders does this customer have?
+```
+def open_orders
+    orders.find(:all, :conditions => "status = 'open'")
+end
+```
 + What editions does this customer have on order?
+```
+def editions_on_order
+    open_orders.map {|order| order.edition }.uniq
+end
+```
 + What editions has this customer ever ordered?
+```
+def editions_on_order
+    open_orders.map {|order| order.edition }.uniq
+end
+```
 + What works does this customer have on order?
+```
+def works_on_order
+    editions_on_order.map {|edition| edition.works }.flatten.uniq
+end
+```
 + What works has this customer ever ordered?
-       The Composer model
+```
+def work_history
+    edition_history.map {|edition| edition.works }.flatten.uniq
+end
+```
+  #####The Composer model
 + What editions of this composer’s works exist?
+```
+```
 + What publishers have editions of this composer’s works?
-  
+```
+```
   
                
