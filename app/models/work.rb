@@ -36,7 +36,22 @@ class Work < ApplicationRecord
     editions.orders.map { |o| o.customer }.uniq
   end
 
-  def key
-    kee
+  # def key
+  #   kee
+  # end
+
+  def nice_opus
+    # если опус содержит только цифры
+    if /^\d/.match(opus)
+      "op. #{opus}"
+    else
+      opus
+    end
+  end
+
+  #Sonata in F Major, op. 99, for cello and piano
+  def nice_title
+    t,k,o,i = title, key, nice_opus, nice_instruments
+    "#{t} #{"in #{k}" if k}#{", #{o}" if o}#{", for #{i}" if i}"
   end
 end
