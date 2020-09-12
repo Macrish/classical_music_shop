@@ -25,6 +25,7 @@ In this application, I will to:
 
 * add to publisher - editions (publisher has_many :editions)
 
+* Soft vs. hard model enhancement
 # change SQLite to MySQL
 
 https://blog.bigbinary.com/2019/04/30/rails-6-has-added-a-way-to-change-the-database-of-the-app.html
@@ -358,3 +359,90 @@ p = Publisher.create(name: "Tanya", city: "***", country: "Urk")
 #choose work_ed = work(1).editions(1)
 p.editions << work_ed
 ```
+# Soft vs. hard model enhancement
+Метод в классе ActiveRecord выполняет одно из 2х:
+* ищет один или несколько объктов ActiveRecord на основе существующих
+                                  данных
+* преобразует данные в ранее не существующую форму
+
+Пассивные методы - извлекаю инфу
+Активные - преобразую её
+```
+class Composer < ActiveRecord::Base
+    has_many :works
+
+    def editions
+        works.map {|work| work.editions }.flatten.uniq
+    end
+
+    def whole_name
+        first_name + " " +
+        (if middle_name then middle_name + " " else "" end) +
+        last_name
+    end
+end 
+```
+works.map {|work| work.editions }.flatten.uniq - soft method,
+эти издания уже существуют и извлекаем их последовательно
+просматривая произведения(work) композитора.
+
+С этого момента все экземпляры композитора будут откликаться на 
+editions возвращая массив содержащий все editions
+editions - пример Soft programmatic enhancement
+
+whole_name - создает новый объект(строку), содержащую
+существующие данные, но напрямую они не соответсвуют какому-либо отдельному свойству объкта
+whole_name - пример hard programmatic enhancement(улучщения).
+
+--
+
+Soft programmatic enhancement - расширяет доступ Композитора к другой
+существующей информации.
+hard programmatic enhancement предполагает создание новых данных
+
+ Если в проекте много Soft p. eh. нужно улушить класс, ведь все эти методы могут быть
+ не нужны, а вместо этого добавить ассоциации
+ 
+ В 15 главе, напишем Soft methods:
+       The Work model
+       
++ Which publishers have published editions of this work?
+       
+```
+def publishers
+  editions.map { |e| e.publisher.name }.uniq
+end
+```
+       
++  What country is this work from?
+```
+def country
+    composer.country
+end
+```
++ Which publishers have published editions of this work?
+```
+def publishers
+    editions.map {|e| e.publisher}.uniq
+end
+```
++ What key is this work in?
+```
+def key
+    kee
+end
+```
+
+  The Customer model
++ Which customers have ordered this work?
++ What open orders does this customer have?
++ What editions does this customer have on order?
++ What editions has this customer ever ordered?
++ What works does this customer have on order?
++ What works has this customer ever ordered?
+       The Composer model
++ What editions of this composer’s works exist?
++ What publishers have editions of this composer’s works?
+  
+  
+               
