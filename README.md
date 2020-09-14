@@ -29,6 +29,12 @@ In this application, I will to:
 
 * Extending model functionality with class methods
 
+* connected lib module class to model
+
+* Determining sales rankings for works
+
+* Enhancing the controllers and views (Chapter 16)
+
 # change SQLite to MySQL
 
 https://blog.bigbinary.com/2019/04/30/rails-6-has-added-a-way-to-change-the-database-of-the-app.html
@@ -571,5 +577,56 @@ end
 ###Determining all editions for a list of works
 
 ```
-
+def self.all_periods
+    Work.all.map {|work| work.period(work.year, work.composer.country) }.flatten.uniq.sort
+end
 ```
+
+# connected lib module class to model
+Add settings ti config/application.rb
+```
+config.autoload_paths += %w(#{config.root}/lib)
+config.autoload_paths += Dir["#{config.root}/lib/**/"]
+```
+когда добавляем конфиги в файле модели не нужно прописывать require "../../lib/.."
+
+В модели нужно было использовать метод класса Period -period
+```
+# пример в work.rb
+def period(year, country)
+    ::Period.new.period(year, country)
+end
+
+def self.all_periods
+    Work.all.map {|work| work.period(work.year, work.composer.country) }.flatten.uniq.sort
+end
+```
+для подключения подуля добавляем в класс inlcude ______ и вставляем название метода в нужное место
+
+# Determining sales rankings for works
+```
+def Work.sales_rankings
+    r = Hash.new(0) #Gives hash default value of zero
+    Work.all.each do |work|
+        work.editions.each do |ed|
+            r[work.id] += ed.orders.size
+        end
+    end
+r
+end
+
+rankings = Work.sales_rankings
+r_sorted = rankings.sort_by {|key,value| value }
+```
+This results in an array of arrays, each inner array containing one key-value pair
+from the hash, in ascending order by value.
+
+
+# Enhancing the controllers and views (Chapter 16)
+
+In this chapter
+* Built-in and custom helper methods
+* Using partial view templates
+* Login and authentication
+* Maintaining session state
+* Dynamic determination of method branching
