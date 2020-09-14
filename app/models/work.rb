@@ -1,4 +1,6 @@
 class Work < ApplicationRecord
+  include SomeFile
+
   belongs_to :composer
   has_and_belongs_to_many :instruments
   # to return editions in ascending order by year
@@ -61,5 +63,20 @@ class Work < ApplicationRecord
 
   def self.all_periods
     Work.all.map {|work| work.period(work.year, work.composer.country) }.flatten.uniq.sort
+  end
+
+  # method which connected from module in lib directory
+  def standart_workname
+    some_method + " " + title
+  end
+
+  def Work.sales_rankings
+    r = Hash.new(0) #Gives hash default value of zero
+    Work.all.each do |work|
+      work.editions.each do |ed|
+        r[work.id] += ed.orders.size
+      end
+    end
+    r
   end
 end

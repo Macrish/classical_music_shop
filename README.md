@@ -620,3 +620,13 @@ r_sorted = rankings.sort_by {|key,value| value }
 ```
 This results in an array of arrays, each inner array containing one key-value pair
 from the hash, in ascending order by value.
+
+
+# Enhancing the controllers and views (Chapter 16)
+
+In this chapter
+* Built-in and custom helper methods
+* Using partial view templates
+* Login and authentication
+* Maintaining session state
+* Dynamic determination of method branching
