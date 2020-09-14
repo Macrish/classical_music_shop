@@ -23,6 +23,18 @@ In this application, I will to:
 
 * add records to DB in many-to-many relations
 
+* add to publisher - editions (publisher has_many :editions)
+
+* Soft vs. hard model enhancement
+
+* Extending model functionality with class methods
+
+* connected lib module class to model
+
+* Determining sales rankings for works
+
+* Enhancing the controllers and views (Chapter 16)
+
 # change SQLite to MySQL
 
 https://blog.bigbinary.com/2019/04/30/rails-6-has-added-a-way-to-change-the-database-of-the-app.html
@@ -349,3 +361,262 @@ v.works
 # отобразить все инструменты, которые использует произведение
 cw.instruments 
 ```
+
+#add to publisher - editions (publisher has_many :editions)
+```
+p = Publisher.create(name: "Tanya", city: "***", country: "Urk")
+#choose work_ed = work(1).editions(1)
+p.editions << work_ed
+```
+# Soft vs. hard model enhancement
+Метод в классе ActiveRecord выполняет одно из 2х:
+* ищет один или несколько объктов ActiveRecord на основе существующих
+                                  данных
+* преобразует данные в ранее не существующую форму
+
+Пассивные методы - извлекаю инфу
+Активные - преобразую её
+```
+class Composer < ActiveRecord::Base
+    has_many :works
+
+    def editions
+        works.map {|work| work.editions }.flatten.uniq
+    end
+
+    def whole_name
+        first_name + " " +
+        (if middle_name then middle_name + " " else "" end) +
+        last_name
+    end
+end 
+```
+works.map {|work| work.editions }.flatten.uniq - soft method,
+эти издания уже существуют и извлекаем их последовательно
+просматривая произведения(work) композитора.
+
+С этого момента все экземпляры композитора будут откликаться на 
+editions возвращая массив содержащий все editions
+editions - пример Soft programmatic enhancement
+
+whole_name - создает новый объект(строку), содержащую
+существующие данные, но напрямую они не соответсвуют какому-либо отдельному свойству объкта
+whole_name - пример hard programmatic enhancement(улучщения).
+
+--
+
+Soft programmatic enhancement - расширяет доступ Композитора к другой
+существующей информации.
+hard programmatic enhancement предполагает создание новых данных
+
+ Если в проекте много Soft p. eh. нужно улушить класс, ведь все эти методы могут быть
+ не нужны, а вместо этого добавить ассоциации
+ 
+ В 15 главе, напишем Soft methods:
+       The Work model
+       
++ Which publishers have published editions of this work?
+       
+```
+def publishers
+  editions.map { |e| e.publisher.name }.uniq
+end
+```
+       
++  What country is this work from?
+```
+def country
+    composer.country
+end
+```
++ Which publishers have published editions of this work?
+```
+def publishers
+    editions.map {|e| e.publisher}.uniq
+end
+```
++ What key is this work in?
+```
+def key
+    kee
+end
+```
+
+  #####The Customer model
++ Which customers have ordered this work?
+```
+def ordered_by
+    editions.orders.map {|o| o.customer }.uniq
+end
+```
++ What open orders does this customer have?
+```
+def open_orders
+    #устарело #orders.find(:all, :conditions => "status = 'open'")
+    orders.where(status: 'open')
+end
+```
++ What editions does this customer have on order?
+```
+def editions_on_order
+    open_orders.map {|order| order.edition }.uniq
+end
+```
++ What editions has this customer ever ordered?
+```
+def editions_on_order
+    open_orders.map {|order| order.edition }.uniq
+end
+```
++ What works does this customer have on order?
+```
+def works_on_order
+    editions_on_order.map {|edition| edition.works }.flatten.uniq
+end
+```
++ What works has this customer ever ordered?
+```
+def work_history
+    edition_history.map {|edition| edition.works }.flatten.uniq
+end
+```
+  #####The Composer model
++ What editions of this composer’s works exist?
+```
+def editions
+    works.map {|work| work.editions }.flatten.uniq
+end
+```
++ What publishers have editions of this composer’s works?
+```
+def publishers
+    editions.map{|edition| edition.publisher }.uniq
+end
+```
+  
+  Самые быстрые запросы в БД - SQL, потому что когда мы пишем запрос на Ruby
+  сначала этот запрос переводится в SQL и только потом получет доступ к БД.
+
+#### Улучшения функциональности модели
+* предварительная установка свойст строки
+До
+```
+def nice_instruments
+   instrs = instruments.map {|inst| inst.name }
+end
+```
+После
+```
+ordered = %w{ flute oboe violin viola cello piano orchestra }
+instrs = instrs.sort_by {|i| ordered.index(i) || 0
+```
+также инструменты можно поместить в константу, но Конст будет
+обновляться вручную
+
+Далее можно задать условие что произведение допустим написано для нескольких инструментов
+```
+case instrs.size
+when 0
+    nil
+when 1
+    instrs[0]
+when 2
+    instrs.join(" and ")
+else
+    instrs[0..-2].join(", ") + ", and " + instrs[-1]
+end
+```
+* расчет периода работы
+```
+class Period
+  attr_accessor :name, :start_date, :end_date
+  attr_reader :countries
+
+  PERIOD = {[1650..1750, %w{ EN DE FR IT ES NL}] => "Baroque",
+            [1751..1810, %w{ EN DE IT NL}]       => "Classical",
+            [1751..1830, %w{ FR }]               => "Classical",
+            [1837..1901, %w{ EN }]               => "Victorian",
+            [1820..1897, %w{ DE FR}]             => "Romantic"}
+  def initialize
+    self.countries = []
+  end
+
+  def period
+    pkey = PERIODS.keys.find do |yrange,countries|
+      yrange.include?(year) && countries.include?(country)
+    end
+    PERIODS[pkey] || century
+  end
+end
+
+# period = Period.new
+# period.name = "Baroque"
+# period.start_date = 1650
+# period.end_data = 1750
+# period.countries = %w{ EN DE FR IT ES NL }
+#
+# нужен хэш по типу
+# [1650..1750, %w{ EN DE FR IT ES NL }] => "Baroque"
+```
+&& || - логическое И ИЛИ
+Оно проверяет условие слева и если условие true - выполняет условие справа
+
+* предоставление клиенту большей функциональности
+
+Рейтинг клиента (любимые товары покупателей(-ля))
+Эта информация может храниться на сервере либо в виде cookie
+ 
+# Extending model functionality with class methods
+
+Методы класса добавляют, когда необходимо обработать все существующие записи для данного класса
+
+Методы экземпляра можно определить как soft(вытаскиваем из БД
+существующие данные) и hard(построение новых структур данных)
+Методы класса тоже активные методы, которые в некоторых случаях используются даже чаще, чем останые
+
+###Determining all editions for a list of works
+
+```
+def self.all_periods
+    Work.all.map {|work| work.period(work.year, work.composer.country) }.flatten.uniq.sort
+end
+```
+
+# connected lib module class to model
+Add settings ti config/application.rb
+```
+config.autoload_paths += %w(#{config.root}/lib)
+config.autoload_paths += Dir["#{config.root}/lib/**/"]
+```
+когда добавляем конфиги в файле модели не нужно прописывать require "../../lib/.."
+
+В модели нужно было использовать метод класса Period -period
+```
+# пример в work.rb
+def period(year, country)
+    ::Period.new.period(year, country)
+end
+
+def self.all_periods
+    Work.all.map {|work| work.period(work.year, work.composer.country) }.flatten.uniq.sort
+end
+```
+для подключения подуля добавляем в класс inlcude ______ и вставляем название метода в нужное место
+
+# Determining sales rankings for works
+```
+def Work.sales_rankings
+    r = Hash.new(0) #Gives hash default value of zero
+    Work.all.each do |work|
+        work.editions.each do |ed|
+            r[work.id] += ed.orders.size
+        end
+    end
+r
+end
+
+rankings = Work.sales_rankings
+r_sorted = rankings.sort_by {|key,value| value }
+```
+This results in an array of arrays, each inner array containing one key-value pair
+from the hash, in ascending order by value.

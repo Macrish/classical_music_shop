@@ -5,7 +5,7 @@
   </tr>
   <% @editions.each do |edition| %>
     <tr>
-      <td><%= edition.publisher %></td>
+      <td><%= edition.publisher.name %></td>
       <td><%= edition.description %></td>
       <td><%= link_to 'Show more', work_edition_path(edition.work, edition) %></td>
     </tr>
