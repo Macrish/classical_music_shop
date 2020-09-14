@@ -78,4 +78,10 @@ class Customer < ApplicationRecord
       acc + order.edition.price
     end
   end
+
+  def check_out
+    orders.each do |order|
+      order.update_attribute(:status, "paid")
+    end
+  end
 end
