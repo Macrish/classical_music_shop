@@ -26,6 +26,9 @@ In this application, I will to:
 * add to publisher - editions (publisher has_many :editions)
 
 * Soft vs. hard model enhancement
+
+* Extending model functionality with class methods
+
 # change SQLite to MySQL
 
 https://blog.bigbinary.com/2019/04/30/rails-6-has-added-a-way-to-change-the-database-of-the-app.html
@@ -557,3 +560,16 @@ end
 Рейтинг клиента (любимые товары покупателей(-ля))
 Эта информация может храниться на сервере либо в виде cookie
  
+# Extending model functionality with class methods
+
+Методы класса добавляют, когда необходимо обработать все существующие записи для данного класса
+
+Методы экземпляра можно определить как soft(вытаскиваем из БД
+существующие данные) и hard(построение новых структур данных)
+Методы класса тоже активные методы, которые в некоторых случаях используются даже чаще, чем останые
+
+###Determining all editions for a list of works
+
+```
+
+```

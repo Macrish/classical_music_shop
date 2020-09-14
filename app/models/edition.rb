@@ -24,4 +24,8 @@ class Edition < ApplicationRecord
     end
     c + " century"
   end
+
+  def self.of_works(works)
+    works.map { |work| work.editions }.flatten.uniq
+  end
 end

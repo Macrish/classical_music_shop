@@ -54,4 +54,12 @@ class Work < ApplicationRecord
     t,k,o,i = title, key, nice_opus, nice_instruments
     "#{t} #{"in #{k}" if k}#{", #{o}" if o}#{", for #{i}" if i}"
   end
+
+  def period(year, country)
+    ::Period.new.period(year, country)
+  end
+
+  def self.all_periods
+    Work.all.map {|work| work.period(work.year, work.composer.country) }.flatten.uniq.sort
+  end
 end
