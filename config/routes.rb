@@ -1,4 +1,5 @@
 Rails.application.routes.draw do
+  get 'instruments/show'
   root 'main#welcome'
   get 'main/home'
   get 'main/view_cart'
