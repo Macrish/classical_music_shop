@@ -1,5 +1,5 @@
 class InstrumentsController < ApplicationController
-  helper :work, :edition
+  helper :works, :editions
 
   def show
     @instrument = Instrument.find(params[:id])

@@ -1,5 +1,21 @@
 <h1>Welcome to #ClassicalMusicShop </h1>
 <p>Click on a composer's name to see all of that composer's works.</p>
 
-<%= render "composers/composer_list" %>
-<%= render "instruments/list" %>
+<table>
+  <tr>
+    <th>...Period</th>
+    <th>...Composer</th>
+    <th>...Instrument</th>
+  </tr>
+  <tr>
+    <td>
+      <%= render "period_list" %>
+    </td>
+    <td>
+      <%= render "composers/composer_list" %>
+    </td>
+    <td>
+      <%= render "instruments/list" %>
+    </td>
+  </tr>
+</table>

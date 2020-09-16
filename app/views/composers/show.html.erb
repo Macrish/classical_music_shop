@@ -1,1 +1,9 @@
-<h1>Hey</h1>
+<h1><%= @composer.whole_name %></h1>
+<p>
+<% @composer.editions.each do |ed| %>
+  <%= ed.title %>
+  <%= ed. description%>
+  <%= ed.year %>
+  $<%= two_dec(ed.price) %><br>
+<% end %>
+</p>
