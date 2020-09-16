@@ -10,7 +10,9 @@
   </head>
 
   <body>
-    <h1 class="banner">Classical Music Shop</h1>
-    <%= yield %>
+    <div class="container">
+      <%= render 'layouts/header' %>
+      <%= yield %>
+    </div>
   </body>
 </html>

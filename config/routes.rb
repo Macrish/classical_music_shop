@@ -1,5 +1,7 @@
 Rails.application.routes.draw do
   root 'main#welcome'
+  get 'main/home'
+  get 'main/view_cart'
 
   resources :composers, only: [:index, :show] do
     resources :works, only: [:index]
