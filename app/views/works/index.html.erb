@@ -1,4 +1,4 @@
 <% @works.each do |work| %>
-  <%= work.title %>
+  <%= link_to_work(work) %>
   <%= link_to 'Show editions', work_editions_path(work) %>
 <% end %>

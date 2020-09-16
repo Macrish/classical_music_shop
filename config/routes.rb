@@ -5,7 +5,7 @@ Rails.application.routes.draw do
     resources :works, only: [:index]
   end
 
-  resources :works, only: [:index] do
+  resources :works, only: [:index, :show] do
     resources :editions, only: [:index, :show]
   end
 end
