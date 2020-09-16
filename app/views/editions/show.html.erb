@@ -10,6 +10,6 @@
   <tr>
     <td><%= @edition.publisher.name %></td>
     <td><%= @edition.year %></td>
-    <td>$<%= @edition.price %></td>
+    <td>$<%= two_dec(@edition.price) %></td>
   </tr>
 </table>
