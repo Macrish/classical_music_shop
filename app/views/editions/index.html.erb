@@ -6,8 +6,13 @@
   <% @editions.each do |edition| %>
     <tr>
       <td><%= edition.publisher.name %></td>
-      <td><%= edition.description %></td>
-      <td><%= link_to 'Show more', work_edition_path(edition.work, edition) %></td>
+      <td>
+      <% edition.works.each do |work| %>
+        <%= link_to_edition(work.id, edition) %>
+        <%= link_to_title(work.id, edition) %>
+        <td><%= link_to 'Show more', work_edition_path(work.id, edition) %></td>
+      <% end %>
+      </td>
     </tr>
   <% end %>
 </table>
