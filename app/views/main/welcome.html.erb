@@ -2,8 +2,7 @@
 <p>Click on a composer's name to see all of that composer's works.</p>
 <% @composers.each do |composer| %>
   <li>
-    <%= composer.last_name %>
-    <%= composer.first_name %>
+    <%= link_to_composer(composer) %>
     <%= link_to 'Show works', composer_works_path(composer) %>
   </li>
 <% end %>

@@ -630,3 +630,51 @@ In this chapter
 * Login and authentication
 * Maintaining session state
 * Dynamic determination of method branching
+
+###Defining helper methods for view templates
+
+ActionPack, родительский пакет для ActionController и ActionView,
+предоставляет две формы помощи в области быстрых методов,
+ доступных для использования вшаблонах.
+ 
+Например, link_to как и многие другие вспомогательные методы
+
+хэлпер для composer views 
+```cassandraql
+module ComposersHelper
+  def link_to_composer(composer)
+    link_to(composer.whole_name, composer_path(composer.id))
+  end
+end
+```
+Быват что Хэдпер для композитоора нужно использовать в других вьюхах.
+это можно сделать 2 способами:
+* Declare :composer to be a helper in the controller file whose templates
+  need access to it
+  ```
+  class MainController < ApplicationController
+      helper :composer
+      # etc.
+  end
+  ```
+  
+* Define the method in the generic application_helper.rb helper file rather
+  than the composer_helper.rb file
+
+Помимо link_to мы напишем 6 впомогательных хэлперов
+```
+Method              Defined in                  Included with helper call in
+                                                these controller files
+link_to_composer    composer_helper.rb      customer, edition, main
+link_to_work        work_helper.rb          composer, customer, edition,
+                                            instrument, main
+link_to_edition     edition_helper.rb       customer, work
+link_to_edition_title edition_helper.rb     composer, instrument
+link_to_instrument instrument_helper.rb     main
+two_dec             application_helper.rb   Automatically available to all
+```
+two_dec - для валюты(долларов и центов)
+Не забывай в контроллере добавить(edition_controller.rb)
+```
+helper :composer, :work
+```

@@ -1,7 +1,7 @@
 Rails.application.routes.draw do
   root 'main#welcome'
 
-  resources :composers, only: [:index] do
+  resources :composers, only: [:index, :show] do
     resources :works, only: [:index]
   end
 
