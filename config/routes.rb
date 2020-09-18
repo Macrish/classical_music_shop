@@ -14,4 +14,8 @@ Rails.application.routes.draw do
   resources :works, only: [:index, :show] do
     resources :editions, only: [:index, :show]
   end
+
+  namespace 'api' do
+    resources :composers, only: [:index, :show]
+  end
 end
