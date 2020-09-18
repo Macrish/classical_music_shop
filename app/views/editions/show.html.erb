@@ -1,5 +1,6 @@
-<p>Details of <%= @edition.work.title %> (<%= @edition.description %>), by
-  <%= "#{@edition.work.composer.first_name} #{@edition.work.composer.last_name}" %></p>
+<p>Details of <%= @work.title %>, (<%= @edition.description %>),
+  by <%= @work.composer.whole_name %></p>
+
 <table border="1">
   <tr>
     <th>Publisher</th>
@@ -9,6 +10,6 @@
   <tr>
     <td><%= @edition.publisher.name %></td>
     <td><%= @edition.year %></td>
-    <td>$<%= @edition.price %></td>
+    <td>$<%= two_dec(@edition.price) %></td>
   </tr>
 </table>

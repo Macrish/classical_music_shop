@@ -1,13 +1,4 @@
-<table>
-  <tr>
-    <th>Publisher</th>
-    <th>Description</th>
-  </tr>
-  <% @editions.each do |edition| %>
-    <tr>
-      <td><%= edition.publisher.name %></td>
-      <td><%= edition.description %></td>
-      <td><%= link_to 'Show more', work_edition_path(edition.work, edition) %></td>
-    </tr>
-  <% end %>
-</table>
+<% @page_title = "Editions of works by #{@work.composer.whole_name}" %>
+<h2 class="info"><%= @page_title %></h2>
+<p>Click on any edition to see details.</p>
+<%= render 'edition' %>
