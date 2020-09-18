@@ -14,9 +14,12 @@ class MainController < ApplicationController
   def view_cart; end
 
   def show_period
-    @period = params[:id]
+    @period = params[:format]
+    return if @period.nil?
+
     works = Work.all.select do |work|
-      (work.period == @period) || (work.century == @period)
+      # (work.period(work.year, work.country) == @period) || (work.century == @period)
+      (work.period(work.year, work.country) == @period)
     end
     @editions = Edition.of_works(works)
   end

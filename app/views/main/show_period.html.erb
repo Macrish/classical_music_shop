@@ -1,0 +1,9 @@
+<h1><%= @period %></h1>
+<%  @editions.each do |edition| %>
+  <li>
+    <%= edition.publisher.name %>
+    <%= edition.description %>
+    <%= edition.year %>
+    $<%= edition.price %>
+  </li>
+<% end  %>
