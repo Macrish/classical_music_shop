@@ -39,6 +39,8 @@ In this application, I will to:
 
 * create Order in DB
 
+* определение рейтинга продаж по композиторам и работам
+
 # change SQLite to MySQL
 
 https://blog.bigbinary.com/2019/04/30/rails-6-has-added-a-way-to-change-the-database-of-the-app.html
@@ -733,3 +735,31 @@ c.orders.create(edition_id: e.id)
 ## Если после неудачных созданных записей в Order содержаться записи с nil-полями
 Просто перезагружаем консоль Ctrl-C, rails c
 
+## определение рейтинга продаж по композиторам и работам
+
+```
+def Work.sales_rankings
+   r = Hash.new(0)
+   find(:all).each do |work|
+     work.editions.each do |ed|
+     r[work.id] += ed.orders.size
+     end
+   end
+   r
+end
+```
+Хэш можно упорядочить
+```
+rankings = Work.sales_rankings
+r_sorted = rankings.sort_by {|key,value| value }
+```
+
+```
+def Composer.sales_rankings
+   r = Hash.new(0)
+   Work.sales_rankings.map do |work,sales|
+     r[work.composer.id] += sales
+   end
+   r
+end
+```
