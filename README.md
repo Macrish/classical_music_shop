@@ -35,6 +35,10 @@ In this application, I will to:
 
 * Enhancing the controllers and views (Chapter 16)
 
+* Фавориты клиента(рейтинг) + code refactor two similar methods
+
+*
+
 # change SQLite to MySQL
 
 https://blog.bigbinary.com/2019/04/30/rails-6-has-added-a-way-to-change-the-database-of-the-app.html
@@ -677,4 +681,44 @@ two_dec - для валюты(долларов и центов)
 Не забывай в контроллере добавить(edition_controller.rb)
 ```
 helper :composer, :work
+```
+
+## Фавориты клиента(рейтинг) + code refactor two similar methods
+Информация хранится либо на клиенте либо на сервере в виде файлов cookie. 
+Эти файлы вычисляются в режиме реального времени на основе истории поиска или заказов клиента.
+Мы выполним пару расчетов такого типа: определим любимых композиторов и инструментов этого клиента. (Оба эти метода являются экземпляром методы класса Customer и поэтому принадлежат модели customer.rb)
+
+Нужно создать массив, в котором будут находиться композиторы/инструменты, которые были заказаны, а потом вытаскиваем уникальные элементы массива + добавляем reverse, чтобы начинать отображать с последнихзаказаных композиторов и инструментов
+
+BEFORE
+```
+def composer_rankings
+  history = work_history.map {|ed| ed.composer }.flatten
+  history.uniq.sort_by do |c|
+    history.select {|comp| comp == c}.size
+  end.reverse
+end
+
+def instrument_rankings
+  history = work_history.map {|work| work.instruments }.flatten
+  history.uniq.sort_by do |i|
+    history.select {|instr| instr == i}.size
+  end.reverse
+end
+```
+AFTER
+```
+def rank(list)
+  list.uniq.sort_by do |a|
+    list.select {|b| b == a}.size
+  end.reverse
+end
+
+def composer_rankings
+  rank(work_history.map {|ed| ed.composer }.flatten)
+end
+
+def instrument_rankings
+  rank(work_history.map {|work| work.instruments }.flatten)
+end
 ```
