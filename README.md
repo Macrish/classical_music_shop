@@ -34,10 +34,10 @@ In this application, I will to:
 * Determining sales rankings for works
 
 * Enhancing the controllers and views (Chapter 16)
-
+ console in trcorf nil
 * Фавориты клиента(рейтинг) + code refactor two similar methods
 
-*
+* create Order in DB
 
 # change SQLite to MySQL
 
@@ -722,3 +722,10 @@ def instrument_rankings
   rank(work_history.map {|work| work.instruments }.flatten)
 end
 ```
+
+## create Order in DB
+``
+c = Customer.last
+e = Edition.last
+c.orders.create(edition_id: e.id)
+``
