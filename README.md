@@ -724,8 +724,12 @@ end
 ```
 
 ## create Order in DB
-``
+```
 c = Customer.last
 e = Edition.last
 c.orders.create(edition_id: e.id)
-``
+```
+
+## Если после неудачных созданных записей в Order содержаться записи с nil-полями
+Просто перезагружаем консоль Ctrl-C, rails c
+
