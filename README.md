@@ -41,6 +41,8 @@ In this application, I will to:
 
 * определение рейтинга продаж по композиторам и работам
 
+* Techniques for exploring the Rails source code
+
 # change SQLite to MySQL
 
 https://blog.bigbinary.com/2019/04/30/rails-6-has-added-a-way-to-change-the-database-of-the-app.html
@@ -763,3 +765,38 @@ def Composer.sales_rankings
    r
 end
 ```
+
+# Techniques for exploring the Rails source code
+Здесь познакомимся с 3 методами исследованиями исходного кода
+
+* просмотр информации
+Просмотр методов изучая исходный код библиотеки Rails
+просмотр методов руби cd .rvm/rubies/ruby-2.6.3/lib/ruby
+
+* теневой Ruby
+отслеживать какие файлы загружаются или выполняются
+■ Диспетчер (dispatch.fcgi, dispatch.cgi или dispatch.rb) загружает
+файл config / environment.rb.
+■ environment.rb загружает основную часть фреймворка Rails: active_record,
+active_controller и так далее.
+■ dispatcher.rb, расположенный в дереве исходных кодов rails, работает с
+средства маршрутизации (перезаписи URL) ActionController для маршрутизации входящих
+запрос к соответствующему контроллеру и действие.
+■ dependencies.rb из библиотеки ActiveSupport определяет методы, которые поддерживают загрузку файлов определения модели (таких как edition.rb), которые соответствуют именам файлов определения контроллера (например, edition_controller.rb) и другие
+такие автоматизированные объекты.
+
+
+■ Переменная ``$:`` содержит путь загрузки, который определяет порядок поиска.
+используется ``require``.
+■ ``__FILE__ ``- это специальная переменная Ruby, которая содержит имя текущего файла:
+active_record.rb.
+■ ``File.dirname`` возвращает часть каталога полного пути и имени файла
+файл - в данном случае /usr/local/lib/ruby/gems/1.8/gems/activerecord1.9.1/lib или аналогичный.
+■ Операция ``unshift`` добавляет этот каталог в начало пути загрузки.
+
+* просмотр документации
+
+Компоненты фреймворка Rails документированы с помощью Ruby
+Система документации (RDoc) https://api.rubyonrails.org/
+
+
